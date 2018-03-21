@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Transit Tracker</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  
+    
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+      
+</head>
+
+<body>
+  
+<nav>
+  <div class="logo"></div>
+  <!-- <ul>
+    <li><a href="#">Sign in</a></li>
+    <li><a href="#">Sign up</a></li>
+  </ul> -->
+</nav>
+<header>
+  <div class="headline">
+    <div class="inner">
+      <h1>Transit Tracker</h1>
+      <p>It's nice to know</p>
+    </div>
+  </div>
+</header>
+<section>
+  <h2>Transit Tracker</h2>
+  <p>Welcome to Transit Tracker, we will help you get to where you are going. Simpley choose a bus route from the drop
+    down menu. Then choose the bus closest to you by clicking on the icon. The Transit Tracker map will display the bus you have choosen
+    along with all the stops that that bus will make. Simpley choose a bus stop, click on its icon, and then Transit Tracker will display
+    what time your bus is scheduled to arive at your choosen stop. The red bus stop icon is the very next stop that your choosen bus will make.
+  </p>
+  <h2>Transit Tracker Map</h2>
+  <h4>Choose a Route from this drop down menu</h4>
+
+  <form>
+    <input id="routes" list="busRoutes"/>
+      <datalist id="busRoutes">
+        <option value="0 South Broadway">
+        <option value="0L South Broadway Limited">
+        <option value="1/1W 1st Avenue">
+        <option value="3 Alameda Avenue">
+        <option value="3L East Alameda Limited">
+        <option value="4 Morrison Road">
+        <option value="6 East 6th Avenue">
+        <option value="8 North Broadway / Huron">
+        <option value="9 West 10th Avenue">
+        <option value="10 East 12th Avenue">
+        <option value="11 Mississippi Avenue">
+        <option value="12 Downing / N Washington">
+        <option value="14 West Florida Avenue">
+        <option value="15 East Colfax Avenue">
+        <option value="15L East Colfax Limited">
+        <option value="16 West Colfax Avenue">
+        <option value="16L West Colfax Limited">
+        <option value="16/16L West Colfax">
+        <option value="17 Red Rocks College">
+        <option value="19 North Pecos">
+        <option value="20 20th Avenue">
+        <option value="21 Evans Avenue">
+        <option value="24 University Blvd">
+        <option value="27 Yale Avenue">
+        <option value="28/28B 28th Avenue">
+        <option value="29 Riverbend">
+        <option value="29/36/36L S Federal-Littleton">
+        <option value="30 South Federal Blvd">
+        <option value="30L South Federal Limited">
+        <option value="30/30L/31 S. Federal combined">
+        <option value="31 Federal Blvd">
+        <option value="31L North Federal Limited">
+        <option value="32 West 32nd Avenue / City Park">
+        <option value="33/33A/33B Platte Valley">
+        <option value="34 Bruce Randolph Ave">
+        <option value="35 Hampden Avenue">
+        <option value="36 Fort Logan">
+        <option value="36L Fort Logan Limited">
+        <option value="37 Smith Road Industrial">
+        <option value="38 West 38th Avenue">
+        <option value="39L North Colorado Limited">
+        <option value="40 Colorado Boulevard">
+        <option value="42 Montbello via Albrook/GVR">
+        <option value="43 Martin Luther King Blvd">
+        <option value="44 44th Avenue">
+        <option value="45 Montbello via 51st/GVR">
+        <option value="46 South Dahlia">
+        <option value="48 East 48th Avenue / Commerce City">
+        <option value="50 Lakes Crosstown">
+        <option value="50/51 Sheridan combined">
+        <option value="51 Sheridan Blvd">
+        <option value="52 W 52nd Avenue / South Bannock">
+        <option value="55L Olde Town Arvada Limited">
+        <option value="59 West Bowles">
+        <option value="62 Commerce City/ Dicks SG Park">
+        <option value="65 Monaco Parkway">
+        <option value="66 Arapahoe Road">
+        <option value="67 Ridge Road">
+        <option value="72/72W 72nd Avenue">
+        <option value="72L Quaker via Ward Limited">
+        <option value="73 Quebec Street">
+        <option value="76 Wadsworth Blvd">
+        <option value="77 Ken Caryl Avenue">
+        <option value="80 80th Avenue">
+        <option value="80L West 80th Limited">
+        <option value="83D/83L Cherry Creek / Parker Rd Limited">
+        <option value="85 Chatfield Avenue">
+        <option value="87L South Wadsworth Limited">
+        <option value="88 Northglenn/Comm City/Central Park">
+        <option value="89 Stapleton / Anschutz Campus">
+        <option value="90L US36 & Sheridan Limited">
+        <option value="92 92nd Avenue">
+        <option value="100 Kipling Street">
+        <option value="100L South Kipling Limited">
+        <option value="104 West 104th Avenue">
+        <option value="105 Havana Street">
+        <option value="112 West 112th Avenue">
+        <option value="120 120th Avenue / Brighton">
+        <option value="121 Peoria Street">
+        <option value="128 Broomfield / Wagon Road">
+        <option value="130 Yale / Buckley">
+        <option value="131 East Iliff / Seven Hills">
+        <option value="133 Hampden/Tower">
+        <option value="135 Smoky Hill Road">
+        <option value="139 Quincy Avenue">
+        <option value="153 Chambers Road">
+        <option value="157 CCA / Buckley">
+        <option value="169 Buckley Road">
+        <option value="169L Buckley / Denver Airport">
+        <option value="204 Table Mesa / Moorhead / North 19th">
+        <option value="205/205T 28th St / Gunbarrel / Heatherwood">
+        <option value="206/206F/206S Boulder Junction/ Fairview H.S.">
+        <option value="208/208F Iris / Valmont">
+        <option value="209 CU / Mohawk Dr">
+        <option value="225/225D/225E Boulder / Lafayette via Baseline">
+        <option value="228 Louisville / Broomfield">
+        <option value="236 Boulder Junction / US36 &Table Mesa">
+        <option value="323 Skyline Crosstown">
+        <option value="324 Main Street">
+        <option value="326 Westside Crosstown">
+        <option value="327 Eastside Crosstown">
+        <option value="401 Highlands Ranch/Mineral">
+        <option value="402L Highlands Ranch Parkway">
+        <option value="403 Wildcat Crosstown">
+        <option value="483 Parker Road - Lincoln Ave">
+        <option value="Anschutz Shuttle Anschutz Shuttle">
+        <option value="ART ART">
+        <option value="Bound 30th Street">
+        <option value="DASH Boulder / Lafayette via Louisville">
+        <option value="HOP Boulder Circulator">
+        <option value="JUMP Boulder / Lafayette via Arapahoe">
+        <option value="JUMP LOOP JUMP West-end Loop">
+        <option value="SKIP Broadway">
+        <option value="Stampede CU East Campus">
+        <option value="104X Commerce City / Denver Express">
+        <option value="116X South Simms Express">
+        <option value="120X Wagon Road / Thornton Express">
+        <option value="122X Wagon Road / Civic Center Express">
+        <option value="BOLT Boulder / Longmont">
+        <option value="CS/ES/100L Federal Center Stn">
+        <option value="CV/CS/CX Pine Junction / Conifer / Denver">
+        <option value="EV/ES/EX Evergreen / Aspen Park / Denver">
+        <option value="GS Golden / Boulder">
+        <option value="J Longmont / East Boulder / CU">
+        <option value="LD/LD1/LD2 Longmont / Denver">
+        <option value="LX/LX1/LX2 Longmont I-25 Express">
+        <option value="N Nederland / Boulder">
+        <option value="P Parker / Denver">
+        <option value="RX/RC Brighton / Denver">
+        <option value="Y Lyons / Boulder">
+      </datalist>
+  </form>
+
+  <button onclick="buttonClicked()">Submit route</button>
+
+  <div id="mapid" style="width: 900px; height: 800px;"></div>
+
+  <script type="text/javascript">
+
+var map = L.map('mapid', {drawControl: true}).setView([39.742043,  -104.991531], 13);
+          L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+
+
+
+      // Initialize a connection via Socket.io
+      // -------------------------------------
+      var socket = io.connect();
+
+      function buttonClicked(){
+      socket.emit('getRoute', document.getElementById("routes").value);
+    }
+
+    //when we receive buttonUpdate, do this
+    socket.on('routeUpdate', function(data){
+        //console.log(data);
+        var latlngs = [];
+
+        data.forEach( function(element, index){
+          L.marker([element.latitude,element.longitude]).addTo(map)
+         .bindPopup('bus ' + index)
+         .openPopup();
+        });
+
+
+        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        // document.getElementById("buttonCount").innerHTML = 'The button has been clicked ' + data + ' times.';
+
+        populateStopsDropdown(data);
+      });
+
+
+      // function populateStopsDropdown(data) {
+      // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // var latlngs1 = [];
+      // var latlngs2 = [];
+      // var latlngs3 = [];
+      // var latlngs4 = [];
+      // var latlngs5 = [];
+      // var latlngs6 = [];
+      // var latlngs7 = [];
+      // var latlngs8 = [];
+      // var latlngs9 = [];
+      // var latlngs10 = [];
+
+      // var polyline1 = L.polyline(latlngs1, {color: 'red'}).addTo(map);
+      // var polyline2 = L.polyline(latlngs2, {color: 'blue'}).addTo(map);
+      // var polyline3 = L.polyline(latlngs3, {color: 'yellow'}).addTo(map);
+      // var polyline4 = L.polyline(latlngs4, {color: 'orange'}).addTo(map);
+      // var polyline5 = L.polyline(latlngs5, {color: 'green'}).addTo(map);
+      // var polyline6 = L.polyline(latlngs6, {color: 'black'}).addTo(map);
+      // var polyline7 = L.polyline(latlngs7, {color: 'purple'}).addTo(map);
+      // var polyline8 = L.polyline(latlngs8, {color: 'brown'}).addTo(map);
+      // var polyline9 = L.polyline(latlngs9, {color: 'pink'}).addTo(map);
+      // var polyline10 = L.polyline(latlngs10, {color: 'cyan'}).addTo(map);
+      // var key;
+
+      // // Send an inital status message to the server
+      // // -------------------------------------------
+      // socket.on('initialLocationData', function(data) {
+      //   key = data[10];
+      //   //console.log(key.id);
+      
+      //   // console.log(data);
+
+      //   // Plots location of every bus
+      //   // ---------------------------------------------
+      //   // console.log(data);
+      //   // data.forEach( function(element, index){
+      //   //   L.marker([element.latitude,element.longitude]).addTo(map)
+      //   //  .bindPopup('bus ' + index)
+      //   //  .openPopup();
+      //   // });
+
+
+      //   // console.log(data);
+      //   var bus1 = data[1];
+      //   var bus2 = data[2];
+      //   var bus3 = data[3];
+      //   var bus4 = data[4];
+      //   var bus5 = data[5];
+      //   var bus6 = data[6];
+      //   var bus7 = data[7];
+      //   var bus8 = data[8];
+      //   var bus9 = data[9];
+      //   var bus10 = data[10];
+
+      //   // console.log(bus7.id);
+
+      //   polyline1.addLatLng([bus1.latitude,bus1.longitude]);
+      //   L.marker([bus1.latitude,bus1.longitude]).addTo(map)
+      //   .bindPopup('bus 1: ' + bus1);
+
+      //   polyline2.addLatLng([bus2.latitude,bus2.longitude]);
+      //   L.marker([bus2.latitude,bus2.longitude]).addTo(map)
+      //   .bindPopup('bus 2: ' + bus2.id);
+
+      //   // console.log("Latitude: " + bus3.latitude + "\nLongitude" + bus3.longitude);
+
+      //   polyline3.addLatLng([bus3.latitude,bus3.longitude]);
+      //   L.marker([bus3.latitude,bus3.longitude]).addTo(map)
+      //   .bindPopup('bus 3: ' + bus3.id);
+      //   //console.log(bus3);o
+
+      //   polyline4.addLatLng([bus4.latitude,bus4.longitude]);
+      //   L.marker([bus4.latitude,bus4.longitude]).addTo(map)
+      //   .bindPopup('bus 4: ' + bus4.id);
+
+      //   polyline5.addLatLng([bus5.latitude,bus5.longitude]);
+      //   L.marker([bus5.latitude,bus5.longitude]).addTo(map)
+      //   .bindPopup('bus 5: ' + bus5.id);
+
+      //   polyline6.addLatLng([bus6.latitude,bus6.longitude]);
+      //   L.marker([bus6.latitude,bus6.longitude]).addTo(map)
+      //   .bindPopup('bus 6: ' + bus6.id);
+
+      //   polyline7.addLatLng([bus7.latitude,bus7.longitude]);
+      //   L.marker([bus7.latitude,bus7.longitude]).addTo(map)
+      //   .bindPopup('bus 7: ' + bus7.id);
+    
+      //   polyline8.addLatLng([bus8.latitude,bus8.longitude]);
+      //   L.marker([bus8.latitude,bus8.longitude]).addTo(map)
+      //   .bindPopup('bus 8: ' + bus8.id);
+
+      //   polyline9.addLatLng([bus9.latitude,bus9.longitude]);
+      //   L.marker([bus9.latitude,bus9.longitude]).addTo(map)
+      //   .bindPopup('bus 9: ' + bus9.id);
+
+      //   polyline10.addLatLng([bus10.latitude,bus10.longitude]);
+      //   L.marker([bus10.latitude,bus10.longitude]).addTo(map)
+      //   .bindPopup('bus 10: ' + bus10.id);
+      //   // key = bus.id;
+
+      //   polyline1.redraw();
+      //   polyline2.redraw();
+      //   polyline3.redraw();
+      //   polyline4.redraw();
+      //   polyline5.redraw();
+      //   polyline6.redraw();
+      //   polyline7.redraw();
+      //   polyline8.redraw();
+      //   polyline9.redraw();
+      //   polyline10.redraw();
+
+      
+      // });
+
+
+      // socket.on('locationData', function(data) {
+      //  // console.log(data[10]);
+      //   //console.log(data.indexOf(key));
+      
+      //   // console.log(data);
+
+      //   // Plots location of every bus
+      //   // ---------------------------------------------
+      //   // console.log(data);
+      //   // data.forEach( function(element, index){
+      //   //   L.marker([element.latitude,element.longitude]).addTo(map)
+      //   //  .bindPopup('bus ' + index)
+      //   //  .openPopup();
+      //   // });
+
+
+      //   // console.log(data);
+      //   var bus1 = data[1];
+      //   var bus2 = data[2];
+      //   var bus3 = data[3];
+      //   var bus4 = data[4];
+      //   var bus5 = data[5];
+      //   var bus6 = data[6];
+      //   var bus7 = data[7];
+      //   var bus8 = data[8];
+      //   var bus9 = data[9];
+      //   var bus10 = data[10];
+
+      //   // console.log(bus7.id);
+
+      //   polyline1.addLatLng([bus1.latitude,bus1.longitude]);
+      //   L.marker([bus1.latitude,bus1.longitude]).addTo(map)
+      //   .bindPopup('bus 1: ' + bus1.id);
+
+      //   polyline2.addLatLng([bus2.latitude,bus2.longitude]);
+      //   L.marker([bus2.latitude,bus2.longitude]).addTo(map)
+      //   .bindPopup('bus 2: ' + bus2.id);
+
+      //   // console.log("Latitude: " + bus3.latitude + "\nLongitude" + bus3.longitude);
+
+      //   polyline3.addLatLng([bus3.latitude,bus3.longitude]);
+      //   L.marker([bus3.latitude,bus3.longitude]).addTo(map)
+      //   .bindPopup('bus 3: ' + bus3.id);
+      //   //console.log(bus3);
+
+      //   polyline4.addLatLng([bus4.latitude,bus4.longitude]);
+      //   L.marker([bus4.latitude,bus4.longitude]).addTo(map)
+      //   .bindPopup('bus 4: ' + bus4.id);
+
+      //   polyline5.addLatLng([bus5.latitude,bus5.longitude]);
+      //   L.marker([bus5.latitude,bus5.longitude]).addTo(map)
+      //   .bindPopup('bus 5: ' + bus5.id);
+
+      //   polyline6.addLatLng([bus6.latitude,bus6.longitude]);
+      //   L.marker([bus6.latitude,bus6.longitude]).addTo(map)
+      //   .bindPopup('bus 6: ' + bus6.id);
+
+      //   polyline7.addLatLng([bus7.latitude,bus7.longitude]);
+      //   L.marker([bus7.latitude,bus7.longitude]).addTo(map)
+      //   .bindPopup('bus 7: ' + bus7.id);
+    
+      //   polyline8.addLatLng([bus8.latitude,bus8.longitude]);
+      //   L.marker([bus8.latitude,bus8.longitude]).addTo(map)
+      //   .bindPopup('bus 8: ' + bus8.id);
+
+      //   polyline9.addLatLng([bus9.latitude,bus9.longitude]);
+      //   L.marker([bus9.latitude,bus9.longitude]).addTo(map)
+      //   .bindPopup('bus 9: ' + bus9.id);
+
+      //   polyline10.addLatLng([bus10.latitude,bus10.longitude]);
+      //   L.marker([bus10.latitude,bus10.longitude]).addTo(map)
+      //   .bindPopup('bus 10: ' + bus10.id);
+      //   // key = bus.id;
+
+      //   polyline1.redraw();
+      //   polyline2.redraw();
+      //   polyline3.redraw();
+      //   polyline4.redraw();
+      //   polyline5.redraw();
+      //   polyline6.redraw();
+      //   polyline7.redraw();
+      //   polyline8.redraw();
+      //   polyline9.redraw();
+      //   polyline10.redraw();
+
+      
+      // });
+
+
+
+
+
+//           var latlngs = [[44.9537731,-93.0898899],[44.95345,-93.08923],[44.95335,-93.08904]];
+// var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+    //  
+
+
+    //   var lat = 43.523077;
+    //         var long = -96.737049;
+    //         polyline.addLatLng([lat, long]);
+    //         for (var i = 0; i < 50; ++i) {
+    //             lat += .01;
+    //             long += .01;
+    //             polyline.addLatLng([lat, long]);
+    //         }
+    //         polyline.addLatLng(44,-95);
+    //   // zoom the map to the polyline
+    //   map.fitBounds(polyline.getBounds());
+
+  	</script>
+  	<footer>
+  	   <div class="container">
+        <div class="left">
+          <div class="contact">
+            <h5>Contact Us</h5>
+            <ul>
+              <li>Phone: 605-371-0000</li>
+              <li>Email: TransitTracker@gmail.com</li>
+              <li>Address: 420 Colorado Ave.</li>
+          </div>
+         </div>
+          <div class="sitemap">
+            <h5>Sitemap</h5>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Support</a></li>
+            </ul>
+          </div>
+        </div>
+  	 	</footer>
+</body>
+</html>

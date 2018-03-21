@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Denver Transit Tracker</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+  
+    
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin=""></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+      
+</head>
+
+<body>
+  
+<nav>
+  <div class="logo"></div>
+  <!-- <ul>
+    <li><a href="#">Sign in</a></li>
+    <li><a href="#">Sign up</a></li>
+  </ul> -->
+</nav>
+<header>
+  <div class="headline">
+    <div class="inner">
+      <h1>Denver Transit Tracker</h1>
+      <p>It's nice to know</p>
+    </div>
+  </div>
+</header>
+<section>
+  <h2>Denver Transit Tracker</h2>
+  <p>Welcome to Transit Tracker, we will help get you where you are going. Simply choose a bus route from the drop-down menu. 
+    Then choose the bus closest to you by clicking on the blue bus icon. The Transit Tracker map will display the bus you have choosen
+    along with the next stop the bus will make. The red bus stop icon is the very next stop that your choosen bus will make. 
+    Simply click the Red bus icon and the Transit Tracker map will display the next bus stops name and the direction the bus is headed. The map will also display 
+    your choosen bus's past locations and past stops. Just click the circle icons to see where your bus has been and what time it was there.
+  </p>
+  <div id = "legend">
+    <ul>
+      <h4>Map legend</h4>
+      <li>
+        <img src="./currentLocation.svg" height="42" width="42">= Current location of a bus
+      </li>
+      <li>
+          <img src="./nextStopIcon.svg" height="42" width="42">= Next stop on the selected bus's route
+      </li>
+      <li>
+          <img src="./blue-dot.svg" height="42" width="42">= Previous location of the bus being tracked
+      </li>
+      <li>
+          <img src="./red-circle.svg" height="42" width="42">= Previous bus stop of the bus being tracked
+      </li>
+    </ul>
+  </div>
+
+
+  <h2>Transit Tracker Map</h2>
+  <h4>Choose a bus Route from this drop down menu</h4>
+
+  <form>
+      <input id="routes" list="busRoutes"/>
+        <datalist id="busRoutes">
+          <option value="0 South Broadway">
+          <option value="0L South Broadway Limited">
+          <option value="1/1W 1st Avenue">
+          <option value="3 Alameda Avenue">
+          <option value="3L East Alameda Limited">
+          <option value="4 Morrison Road">
+          <option value="6 East 6th Avenue">
+          <option value="8 North Broadway / Huron">
+          <option value="9 West 10th Avenue">
+          <option value="10 East 12th Avenue">
+          <option value="11 Mississippi Avenue">
+          <option value="12 Downing / N Washington">
+          <option value="14 West Florida Avenue">
+          <option value="15 East Colfax Avenue">
+          <option value="15L East Colfax Limited">
+          <option value="16 West Colfax Avenue">
+          <option value="16L West Colfax Limited">
+          <option value="16/16L West Colfax">
+          <option value="17 Red Rocks College">
+          <option value="19 North Pecos">
+          <option value="20 20th Avenue">
+          <option value="21 Evans Avenue">
+          <option value="24 University Blvd">
+          <option value="27 Yale Avenue">
+          <option value="28/28B 28th Avenue">
+          <option value="29 Riverbend">
+          <option value="29/36/36L S Federal-Littleton">
+          <option value="30 South Federal Blvd">
+          <option value="30L South Federal Limited">
+          <option value="30/30L/31 S. Federal combined">
+          <option value="31 Federal Blvd">
+          <option value="31L North Federal Limited">
+          <option value="32 West 32nd Avenue / City Park">
+          <option value="33/33A/33B Platte Valley">
+          <option value="34 Bruce Randolph Ave">
+          <option value="35 Hampden Avenue">
+          <option value="36 Fort Logan">
+          <option value="36L Fort Logan Limited">
+          <option value="37 Smith Road Industrial">
+          <option value="38 West 38th Avenue">
+          <option value="39L North Colorado Limited">
+          <option value="40 Colorado Boulevard">
+          <option value="42 Montbello via Albrook/GVR">
+          <option value="43 Martin Luther King Blvd">
+          <option value="44 44th Avenue">
+          <option value="45 Montbello via 51st/GVR">
+          <option value="46 South Dahlia">
+          <option value="48 East 48th Avenue / Commerce City">
+          <option value="50 Lakes Crosstown">
+          <option value="50/51 Sheridan combined">
+          <option value="51 Sheridan Blvd">
+          <option value="52 W 52nd Avenue / South Bannock">
+          <option value="55L Olde Town Arvada Limited">
+          <option value="59 West Bowles">
+          <option value="62 Commerce City/ Dicks SG Park">
+          <option value="65 Monaco Parkway">
+          <option value="66 Arapahoe Road">
+          <option value="67 Ridge Road">
+          <option value="72/72W 72nd Avenue">
+          <option value="72L Quaker via Ward Limited">
+          <option value="73 Quebec Street">
+          <option value="76 Wadsworth Blvd">
+          <option value="77 Ken Caryl Avenue">
+          <option value="80 80th Avenue">
+          <option value="80L West 80th Limited">
+          <option value="83D/83L Cherry Creek / Parker Rd Limited">
+          <option value="85 Chatfield Avenue">
+          <option value="87L South Wadsworth Limited">
+          <option value="88 Northglenn/Comm City/Central Park">
+          <option value="89 Stapleton / Anschutz Campus">
+          <option value="90L US36 & Sheridan Limited">
+          <option value="92 92nd Avenue">
+          <option value="100 Kipling Street">
+          <option value="100L South Kipling Limited">
+          <option value="104 West 104th Avenue">
+          <option value="105 Havana Street">
+          <option value="112 West 112th Avenue">
+          <option value="120 120th Avenue / Brighton">
+          <option value="121 Peoria Street">
+          <option value="128 Broomfield / Wagon Road">
+          <option value="130 Yale / Buckley">
+          <option value="131 East Iliff / Seven Hills">
+          <option value="133 Hampden/Tower">
+          <option value="135 Smoky Hill Road">
+          <option value="139 Quincy Avenue">
+          <option value="153 Chambers Road">
+          <option value="157 CCA / Buckley">
+          <option value="169 Buckley Road">
+          <option value="169L Buckley / Denver Airport">
+          <option value="204 Table Mesa / Moorhead / North 19th">
+          <option value="205/205T 28th St / Gunbarrel / Heatherwood">
+          <option value="206/206F/206S Boulder Junction/ Fairview H.S.">
+          <option value="208/208F Iris / Valmont">
+          <option value="209 CU / Mohawk Dr">
+          <option value="225/225D/225E Boulder / Lafayette via Baseline">
+          <option value="228 Louisville / Broomfield">
+          <option value="236 Boulder Junction / US36 &Table Mesa">
+          <option value="323 Skyline Crosstown">
+          <option value="324 Main Street">
+          <option value="326 Westside Crosstown">
+          <option value="327 Eastside Crosstown">
+          <option value="401 Highlands Ranch/Mineral">
+          <option value="402L Highlands Ranch Parkway">
+          <option value="403 Wildcat Crosstown">
+          <option value="483 Parker Road - Lincoln Ave">
+          <option value="Anschutz Shuttle Anschutz Shuttle">
+          <option value="ART ART">
+          <option value="Bound 30th Street">
+          <option value="DASH Boulder / Lafayette via Louisville">
+          <option value="HOP Boulder Circulator">
+          <option value="JUMP Boulder / Lafayette via Arapahoe">
+          <option value="JUMP LOOP JUMP West-end Loop">
+          <option value="SKIP Broadway">
+          <option value="Stampede CU East Campus">
+          <option value="104X Commerce City / Denver Express">
+          <option value="116X South Simms Express">
+          <option value="120X Wagon Road / Thornton Express">
+          <option value="122X Wagon Road / Civic Center Express">
+          <option value="BOLT Boulder / Longmont">
+          <option value="CS/ES/100L Federal Center Stn">
+          <option value="CV/CS/CX Pine Junction / Conifer / Denver">
+          <option value="EV/ES/EX Evergreen / Aspen Park / Denver">
+          <option value="GS Golden / Boulder">
+          <option value="J Longmont / East Boulder / CU">
+          <option value="LD/LD1/LD2 Longmont / Denver">
+          <option value="LX/LX1/LX2 Longmont I-25 Express">
+          <option value="N Nederland / Boulder">
+          <option value="P Parker / Denver">
+          <option value="RX/RC Brighton / Denver">
+          <option value="Y Lyons / Boulder">
+        </datalist>
+    </form>
+
+  <button id="submitButton" onclick="buttonClicked()">Submit route</button>
+
+  <div id="mapid" style="width: 900px; height: 800px;"></div>
+</section>
+
+<script type="text/javascript">
+
+    //initialize leaflet map
+    //----------------------
+    var map = L.map('mapid', {drawControl: true}).setView([39.742043,  -104.991531], 13);
+              L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+    
+    //used to reference the busses on the current route that is selected
+    var currentBusses = [];
+    //used the reference the markers for the busses on the map
+    var markerArr = [];
+    // var latlngs = [];
+    var oldPositionMarkers = [];
+    var oldStopMarkers = [];
+    // var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+    var id;
+    var nextStopMarker;
+    var oldBusLocation;
+    //custom icons
+    currentLocationIcon = L.Icon.extend({
+    options: {
+        iconSize: [50,50],
+        iconAnchor: [23, 50],
+        popupAnchor:  [0, -50],
+    } });
+    var currentLocation = new currentLocationIcon({iconUrl: './currentLocation.svg'});
+
+    // Initialize a connection via Socket.io
+    // -------------------------------------
+    var socket = io.connect();
+
+    // Function emits the value selected in the pick box to the server
+    // --------------------------------------------------------------------------------------------
+    function buttonClicked(){
+
+      submitButton.disabled = true;
+      // If the user presses the submit route button twice in a row, 
+      // this loop removes any extra markers before plotting new ones
+        markerArr.forEach(function(element){
+          map.removeLayer(element);
+        });
+        markerArr = [];
+
+        oldPositionMarkers.forEach(function(element) {
+          map.removeLayer(element);
+        });
+        oldPositionMarkers = [];
+
+        oldStopMarkers.forEach(function(element) {
+          map.removeLayer(element);
+        });
+        oldStopMarkers = [];
+        
+      if (nextStopMarker != null)
+        map.removeLayer(nextStopMarker);
+
+
+      socket.emit('getRoute', document.getElementById("routes").value);  
+    }
+
+    // Plot all the buses on the route the user selected, data contains all of the busses on the route
+    // -----------------------------------------------------------------------------------------------
+    socket.on('routeUpdate', function(data){
+
+      submitButton.disabled = false;
+
+        currentBusses = data;  
+        var arr = [];
+
+        data.forEach(function(element){
+          arr.push(L.marker([element.latitude,element.longitude], {icon: currentLocation}).on('click', onClick).addTo(map)
+         .bindPopup('Selected bus, click red marker to see information about next stop'));
+        });
+
+        markerArr = arr;
+      });
+
+      socket.on('updatedLocation', function(data){
+        data.forEach(function(element) {
+            if (element.id.split("_")[1] == id) {
+              //add a marker to the screen for where the bus is, potentially erase the old bus marker and replace it with a dot to show
+              //where the bus has been since you started tracking it and add a new marker with a popup to the current location
+              //additionally we should check if the next stop has changed and if it has, remove the old one from the map and add the new one
+              markerArr.push(L.marker([element.latitude,element.longitude], {icon: currentLocation}).on('click', onClick).addTo(map)
+              .bindPopup('Selected bus, click red marker to see information about next stop'));
+            }
+        });
+      });
+
+      //change so we add them to a different array than markerArr so it is easy to get rid of the markers maybe
+      //erase the old marker you clicked on and add a new one that does not have a click event subscribed to it
+      function onClick(e) {
+          var latitude = e.latlng.lat;
+          var longitude = e.latlng.lng;
+          var temp = [];
+          markerArr.forEach(function(element) {
+            if (element.getLatLng() != e.latlng) {
+              map.removeLayer(element);
+            }
+            else temp.push(element);
+          });
+          //set the marker array to contain only the selected marker
+          markerArr = temp;
+          var bus = new Object();
+          currentBusses.forEach(function(element) {
+            if (element.latitude == latitude && element.longitude == longitude)
+              bus = element;
+          });
+
+          //get rid of click event for the marker to prevent double clicking an icon
+          //console.log(markerArr.length);
+          map.removeLayer(markerArr[0]);
+          markerArr[0] = L.marker([bus.latitude,bus.longitude], {icon: currentLocation}).addTo(map)
+              .bindPopup('Selected bus, click red marker to see information about next stop')
+              .openPopup();
+
+          //create custom icons for bus stops and the next stop the bus is going to
+          var StopIcon = L.Icon.extend({
+            options: {
+                iconSize: [50,50],
+                iconAnchor: [23, 50],
+                popupAnchor:  [0, -50],
+            } }),
+            nextStopIcon = L.Icon.extend({
+            options: {
+                iconSize: [50,50],
+                iconAnchor: [23, 50],
+                popupAnchor:  [0, -50],
+            } });
+          var stop = new StopIcon({iconUrl: './stopIcon.svg'});
+          var nextStop = new StopIcon({iconUrl: './nextStopIcon.svg'});
+          nextStopMarker = L.marker([bus.nextStop.latitude, bus.nextStop.longitude], {icon: nextStop}).addTo(map).bindPopup("Next stop location: " + bus.nextStop.stopName + 
+                                                                                                          "<br/>Bus direction: " + bus.nextStop.description);
+
+          socket.emit('selectedBus', bus);
+          oldBusLocation = bus;
+      }
+
+      socket.on('trackBus', function(data) {
+
+        //check if the data submitted back is the same latitude and longitude as the current marker and if it is, do nothing
+        //otherwise get the old marker location and change that to a blue dot to show where the bus has been previously
+        //and add the new latitude and longitude marker as the busses current location.
+        //if the current location updates we should also check if the next stop marker is still correct and if it isn't get rid
+        //of the old marker and plot the new one
+        //*** add timestamp to old bus popups to see when it was there
+        //*** could maybe also change previous stop locations to a red dot and add a timestamp as well when it was there
+        //console.log("In track bus \n"+markerArr.length);
+
+        // console.log("current marker latitude: " + markerArr[0]._latlng.lat);
+        // console.log("current marker longitude: " + markerArr[0]._latlng.lng);
+        // console.log("new point latitude: " + data.latitude);
+        // console.log("new point longitude: " + data.longitude);
+
+        //go into if statement if the bus position updated
+        if ((markerArr[0]._latlng.lat != data.latitude) || (markerArr[0]._latlng.lng != data.longitude)){
+          console.log("position updated");
+          //get the old marker
+          var oldMarker = markerArr[0];
+          //remove it from the map
+          map.removeLayer(oldMarker);
+          //create icon for the old location icon replacement
+          var StopIcon = L.Icon.extend({
+            options: {
+                iconSize: [10,10],
+            } });
+          var oldLocation = new StopIcon({iconUrl: './blue-dot.svg'});
+          //add old marker location to the map
+          console.log(oldMarker);
+
+            //convert timestamp to time from oldBusLocation
+            var utcSeconds = oldBusLocation.timestamp*1000;
+            var d = new Date(utcSeconds); // The 0 there is the key, which sets the date to the epoch
+            var day;
+            switch (d.getDay()) {
+                case 1: day = "Monday"; break;
+                case 2: day = "Tuesday"; break;
+                case 3: day = "Wednesday"; break;
+                case 4: day = "Thursday"; break;
+                case 5: day = "Friday"; break;
+                case 6: day = "Saturday"; break;
+                case 7: day = "Sunday"; break;
+            }
+            var month;
+            switch (d.getMonth()) {
+                case 0: month = "January"; break;
+                case 1: month = "February"; break;
+                case 2: month = "March"; break;
+                case 3: month = "April"; break;
+                case 4: month = "May"; break;
+                case 5: month = "June"; break;
+                case 6: month = "July"; break;
+                case 7: month = "August"; break;
+                case 8: month = "September"; break;
+                case 9: month = "October"; break;
+                case 10: month = "November"; break;
+                case 11: month = "December"; break;
+            }
+
+
+          oldPositionMarkers.push(L.marker([oldMarker._latlng.lat, oldMarker._latlng.lng], {icon: oldLocation}).addTo(map).bindPopup("Previous bus location at time: " + 
+                                                                            day + " " + month + " " + d.getDate() + ", " + d.getFullYear() + ", " + d.toLocaleTimeString()));
+          //check if the next stop has changed 
+          if ((data.nextStop.stop_id.latitude != nextStopMarker._latlng.lat) || (data.nextStop.stop_id.longitude != nextStopMarker._latlng.lng)) {
+            //create the custom icon
+            nextStopIcon = L.Icon.extend({
+            options: {
+                iconSize: [50,50],
+                iconAnchor: [23, 50],
+                popupAnchor:  [0, -50],
+            } });
+            var nextStop = new nextStopIcon({iconUrl: './nextStopIcon.svg'});
+            //if it has changed, remove the old marker
+            var BusStopIcon = L.Icon.extend({
+            options: {
+                iconSize: [10,10],
+            } });
+            var oldStop = new BusStopIcon({iconUrl: './red-circle.svg'});
+            map.removeLayer(nextStopMarker);
+            oldStopMarkers.push(L.marker([nextStopMarker._latlng.lat, nextStopMarker._latlng.lng], {icon: oldStop}).addTo(map).bindPopup("Old bus stop location"));
+            //add the new marker at the new stop location
+            nextStopMarker = L.marker([data.nextStop.latitude, data.nextStop.longitude], {icon: nextStop}).addTo(map).bindPopup("Next stop location: " + data.nextStop.stopName + 
+                                                                                                          "<br/>Bus direction: " + data.nextStop.description);
+          }
+
+
+          //add the new marker to the map
+          markerArr[0] =L.marker([data.latitude,data.longitude], {icon: currentLocation}).addTo(map)
+        .bindPopup('current bus location');
+         oldBusLocation = data;
+        }
+
+        // markerArr.push(L.marker(data).addTo(map)
+        // .bindPopup('current bus location'));
+
+      });
+
+    </script>
+    
+  	<footer>
+  	  
+  	 	</footer>
+</body>
+</html>
